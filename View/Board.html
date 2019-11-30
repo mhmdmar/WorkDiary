@@ -1,0 +1,310 @@
+<!-- Copyright 2019 Muhammad Haj-Yahya-->
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <link href="CSS_Sheets/boostrap.css" rel="stylesheet" />
+    <link href="CSS_Sheets/5.styles.css" rel="stylesheet" />
+    <link href="CSS_Sheets/generic.css" rel="stylesheet" />
+    <link href="CSS_Sheets/sidebar.css" rel="stylesheet" />
+    <link href="CSS_Sheets/headerBar.css" rel="stylesheet" />
+    <link href="CSS_Sheets/note.css" rel="stylesheet" />
+    <script src="../ViewModel/Libs/jquery-3.3.1.js"></script>
+    <script src="../ViewModel/Libs/knockout-3.4.2.js"></script>
+    <script src="../NB.js"></script>
+    <script src="../Model/Storage.js"></script>
+    <script src="../Model/Board.js"></script>
+    <script src="../Model/Note.js"></script>
+    <script src="../Model/Contact.js"></script>
+    <script src="../Utils/Utils.js"></script>
+    <script charset="utf-8" src="./Words/Words_en.ts"></script>
+    <script src="../ViewModel/ContactVM.js"></script>
+    <script src="../ViewModel/BoardViewModel.js"></script>
+    <script src="../ViewModel/Bind.js"></script>
+    <script src="../Utils/Keys.js"></script>
+    <script src="../ViewModel/KeyboardEvents.js"></script>
+    <title>Work Diary</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <nav class="navbar navbar-default">
+        <div class="navbar-header">
+          <span class="navbar-brand pointerN" data-toggle="tab" id="appName"
+            >Work Diary</span
+          >
+        </div>
+        <div class="navbar-body">
+          <div class="nav navbar-nav navbar-right">
+            <div class="input-icon inline">
+              <label class="search-label">
+                <input
+                  class="search"
+                  data-bind="enabled: !contactInEditMode(),placeholder:NB.Words.SearchText, disable: contactInEditMode(), textInput: searchQuery, event: {
+        keyup: filterBoard, search: filterBoard }"
+                  type="Search"
+                />
+              </label>
+            </div>
+            <span
+              class="hpe-icon pointer"
+              data-bind="click: resetSearch(), css: { 'hpe-search': !searchQuery(), 'hpe-status-error-filled': searchQuery() }"
+            ></span>
+          </div>
+        </div>
+      </nav>
+      <div class="toolbar-container">
+        <div class="ux-toolbar-left toolBar">
+          <button
+            aria-label="Add"
+            class="btn btn-link btn-icon button-secondary"
+            data-bind="enable: !contactInEditMode(), click: addContact"
+            id="addBtn"
+            title="Add contact (CTRL + t)"
+          >
+            <span class="hpe-icon hpe-add"></span>
+          </button>
+          <button
+            aria-label="Save"
+            class="btn btn-link btn-icon button-secondary"
+            data-bind="enable: canSave(), click: clickSave, css: { active:canSave() }"
+            title="Save contact (CTRL + s)"
+          >
+            <span class="hpe-icon hpe-document-verified"></span>
+          </button>
+          <label
+            title="Sort contacts by date in 'Ascending' or 'Descending' order"
+          >
+            <button
+              aria-label="Reset"
+              class="btn btn-link btn-icon button-secondary"
+              data-bind="enable: canSave(),click: resetContacts"
+              id="resetContact"
+              title="Reset contacts (CTRL + SHIFT + t)"
+            >
+              <span class="hpe-icon hpe-refresh"></span>
+            </button>
+            <select
+              data-bind="enable:!contactInEditMode(),options:sortOptions, value: selectedSortOption"
+              class="customSelect ellipsis"
+            >
+            </select>
+          </label>
+          <span
+            class="searchCheckBox"
+            style="margin-right: 60px"
+            title="Search by Name"
+          >
+            <input
+              data-bind="checked: searchByText"
+              id="name"
+              type="checkbox"
+              value="name"
+            />
+            <label for="name" data-bind="html: NB.Words.Name"></label>
+          </span>
+          <span class="searchCheckBox" title="Search by Date">
+            <input
+              data-bind="checked: searchByDate"
+              id="date"
+              type="checkbox"
+              value="date"
+            />
+            <label for="date" data-bind="html: NB.Words.Date"></label>
+          </span>
+        </div>
+      </div>
+      <div dir="rtl">
+        <div
+          data-bind="visible:!contactInEditMode(), foreach: { data: ContactsVM, as: 'contact' }"
+        >
+          <div data-bind="visible: contact.visible()">
+            <div class="col-sm-2 noteCard" data-bind="attr: { id: id }">
+              <div class="ux-toolbar" role="toolbar">
+                <div class="ux-toolbar-left">
+                  <button
+                    aria-label="Edit"
+                    class="btn btn-link btn-icon button-secondary"
+                    data-bind="click: $root.clickEditContact"
+                    title="Edit contact (CTRL + e)"
+                  >
+                    <span class="hpe-icon hpe-edit"></span>
+                  </button>
+                  <button
+                    aria-label="Discard"
+                    class="btn btn-link btn-icon button-secondary"
+                    data-bind="enable: contact.canDiscard(), click: $root.discardContact, css: {  'active': contact.canDiscard() }"
+                    title="Discard changed (CTRL + r)"
+                  >
+                    <span class="hpe-icon hpe-refresh"></span>
+                  </button>
+                </div>
+                <div class="ux-toolbar-right">
+                  <button
+                    aria-label="Delete"
+                    class="btn btn-link btn-icon button-secondary"
+                    data-bind="click: $root.clickRemoveContact"
+                    title="Delete contact (CTRL + d)"
+                  >
+                    <span class="hpe-icon hpe-trash"></span>
+                  </button>
+                </div>
+              </div>
+              <div class="labelFather">
+                <div class="info-container">
+                  <span data-bind="html: NB.Words.Name"></span>
+                  <label class="info-label">
+                    <input
+                      class="info-input"
+                      data-bind="textInput: contact.name"
+                    />
+                  </label>
+                </div>
+                <div class="info-container">
+                  <span data-bind="html: NB.Words.PhoneNumber"></span>
+                  <label class="info-label">
+                    <input
+                      class="info-input"
+                      data-bind="textInput: contact.phoneNumber"
+                    />
+                  </label>
+                </div>
+                <div class="info-container">
+                  <span data-bind="html: NB.Words.Balance"></span>
+                  <label class="info-label">
+                    <input
+                      class="info-input"
+                      data-bind="textInput: contact.balance"
+                    />
+                  </label>
+                </div>
+              </div>
+              <p class="date" data-bind="text: contact.lastModifiedTime()"></p>
+              <div class="confirm">
+                <i>Confirm Delete</i>
+                <button
+                  aria-label="Cancel"
+                  class="btn btn-link btn-icon button-secondary"
+                  data-bind="click: $root.cancelRemoveContact"
+                  title="Cancel (CTRL + d)"
+                >
+                  <span class="hpe-icon hpe-close"></span>
+                </button>
+                <button
+                  aria-label="Accept"
+                  class="btn btn-link btn-icon button-secondary"
+                  data-bind="click: $root.removeContact"
+                  title="Delete (CTRL + y)"
+                >
+                  <span class="hpe-icon hpe-checkmark"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-bind="if: contactInEditMode">
+          <div class="left-side">
+            <div class="contactCard">
+              <div class="ux-toolbar" role="toolbar">
+                <div class="ux-toolbar-left">
+                  <button
+                    aria-label="Back"
+                    class="btn btn-link btn-icon button-secondary"
+                    data-bind="click: $root.backToBoard"
+                    title="Back to board"
+                  >
+                    <span class="hpe-icon hpe-link-previous"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="split left">
+            <div class="centered">
+              <div class="editModeContainer">
+                <div class="labelFather">
+                  <span data-bind="html: NB.Words.Name"></span>
+                  <label class="info-label">
+                    <input
+                      class="info-input"
+                      data-bind="textInput: contactInEditMode().name"
+                    />
+                  </label>
+                  <span data-bind="html: NB.Words.PhoneNumber"></span>
+                  <label class="info-label">
+                    <input
+                      class="info-input"
+                      data-bind="textInput: contactInEditMode().phoneNumber"
+                    />
+                  </label>
+                  <span data-bind="html: NB.Words.Balance"></span>
+                  <label class="info-label">
+                    <input
+                      class="info-input"
+                      data-bind="textInput: contactInEditMode().balance"
+                    />
+                  </label>
+
+                  <p
+                    class="date split-date"
+                    data-bind="text: contactInEditMode().lastModifiedTime()"
+                  ></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="split right">
+            <div class="notes-container">
+              <div
+                data-bind="foreach: { data: contactInEditMode().notes, as: 'note' }"
+              >
+                <div class="note">
+                  <p class="ellipsis noteText" data-bind="text:note.text"></p>
+                  <p class="date" data-bind="text:note.date"></p>
+                  <div class="noteUtils">
+                    <button
+                      aria-label="RemoveNote"
+                      class="btn btn-link btn-icon button-secondary"
+                      data-bind="click: $root.removeNote"
+                      id="removeNote"
+                      title="remove note"
+                    >
+                      <span class="hpe-icon hpe-close"></span>
+                    </button>
+                    <button
+                      aria-label="EditNote"
+                      class="btn btn-link btn-icon button-secondary"
+                      data-bind="click: $root.editNote"
+                      id="editNote"
+                      title="edit note"
+                    >
+                      <span class="hpe-icon hpe-edit"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="notes-input-container">
+              <button
+                aria-label="AddNote"
+                class="btn btn-link btn-icon button-secondary"
+                data-bind="click: addNote"
+                id="addNote"
+                title="Add contact (CTRL + t)"
+              >
+                <span class="hpe-icon hpe-add"></span>
+              </button>
+              <label class="info-label notes-input-label">
+                <input
+                  class="info-input"
+                  id="addNoteInput"
+                  data-bind="textInput:noteText"
+                  placeholder="add note"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

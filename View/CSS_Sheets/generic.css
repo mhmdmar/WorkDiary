@@ -1,0 +1,94 @@
+html,
+body {
+  background-color: #f1f2f3;
+}
+
+.container-fluid {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.hpe-icon {
+  font-size: 16px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.pointerN {
+  cursor: default;
+}
+
+.activeElement {
+  background-color: #ffffff;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.info-input {
+  width: 100%;
+  color: black;
+}
+.info-label {
+  width: 100%;
+}
+
+.search-label {
+  margin: inherit;
+}
+
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+  border: solid 1px black;
+  border-right: solid black;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+  border: solid 1px black;
+  border-left: solid black;
+}
+
+.split-date {
+  margin: 20px 50px;
+}
+
+.notes-input-container {
+  display: flex;
+  position: fixed;
+  width: 100%;
+  bottom: 5px;
+}
+
+.notes-input-label {
+  width: 45%;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.notes-container {
+  height: 85%;
+  overflow-y: scroll;
+}
