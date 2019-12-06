@@ -75,3 +75,6 @@ div.activeCategory.generalCategory {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
 }
+.toolBar {
+   overflow: hidden;
+}
