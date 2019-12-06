@@ -5,7 +5,8 @@ NB.Words_en = {
   Date: "Date",
   SearchText: "Search text...",
   Ascending: "Ascending",
-  Descending: "Descending"
+  Descending: "Descending",
+  confirmDelete: "Confirm Delete"
 };
 
 NB.Words_hebrew = {
@@ -15,7 +16,8 @@ NB.Words_hebrew = {
   Date: "תאריך",
   SearchText: "חיפוש...",
   Ascending: "סדר עולה",
-  Descending: "סדר יורד"
+  Descending: "סדר יורד",
+  confirmDelete: "תאשר מחיקה"
 };
 
 NB.Words = NB.Words_hebrew;
