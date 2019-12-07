@@ -99,3 +99,17 @@ div {
   border: solid 2px white;
   margin-bottom: 15px;
 }
+#addNote{
+  display: inline-flex;
+}
+
+.notes-input-container {
+  margin-top: 15px;
+  display: flex;
+  width: 100%;
+  bottom: 5px;
+}
+
+.notes-input-label {
+  display: inline-flex;
+}
